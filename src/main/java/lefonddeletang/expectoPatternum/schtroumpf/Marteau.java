@@ -7,7 +7,7 @@ public class Marteau {
     private static Marteau instance;
     private boolean disponible;
     private Marteau() {
-
+        this.disponible = true ;
     }
     public static Marteau getInstance() {
         if (instance == null) {
