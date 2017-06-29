@@ -5,12 +5,12 @@ package lefonddeletang.expectoPatternum.schtroumpf;
  */
 public class Pont {
     private static Pont instance;
-    private int nombreDeCoupDeMarteauNecessaires;
+    private int nombreDeCoupsDeMarteauNecessaires;
     private Pont() {
-        this.nombreDeCoupDeMarteauNecessaires = 12;
+        this.nombreDeCoupsDeMarteauNecessaires = 12;
     }
     public static Pont getInstance() {
-        if (instance == null){
+        if (instance == null) {
             instance = new Pont();
         }
         return instance;
