@@ -1,4 +1,4 @@
-package lefonddeletang.expectoPatternum.telephone;
+package lefonddeletang.expectoPatternum.chargeur;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -11,7 +11,7 @@ public class App
         
         // Création des files d'attente de transformateur et de chargeur
         final BlockingQueue<Transformateur> transformateurQueue = new LinkedBlockingQueue<Transformateur>(10);
-        final BlockingQueue<Chargeur> chargeurQueue = new LinkedBlockingQueue<Chargeur>(20);
+        final BlockingQueue<Chargeur> chargeurQueue = new LinkedBlockingQueue<Chargeur>(75);
         
         // Initialisation des thread producteurs
         new Thread(new TransformateurProducer(transformateurQueue)).start();

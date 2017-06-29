@@ -1,4 +1,4 @@
-package lefonddeletang.expectoPatternum.telephone;
+package lefonddeletang.expectoPatternum.chargeur;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -15,21 +15,30 @@ public class ChargeurProducer implements Runnable {
 	public ChargeurProducer(final BlockingQueue<Transformateur> transformateurQueue, final BlockingQueue<Chargeur> chargeurQueue) {
 		this.transformateurQueue = transformateurQueue;
 		this.chargeurQueue = chargeurQueue;
+		//this.producteursDependants = producteursDependants;
 	}
 
 	public void run() {
 		// Production des chargeurs
 		while (producing) {
 			if (transformateurQueue.size() > 0) {
-				System.out.println("Transformateur recupere par le producteur de chargeur !");
+				// Récupération d'un chargeur
+				System.out.println("Transformateur recupere par le producteur de chargeur.");
 				Transformateur nouveauTransformateur = transformateurQueue.poll();
+				// Récupération d'un cable
 				Cable nouveauCable = cableFactory.creerCable();
-				Chargeur nouveauChargeur = new Chargeur(nouveauTransformateur, nouveauCable);
-				try {
-					chargeurQueue.put(nouveauChargeur);
-					System.out.println("Un nouveau chargeur a ete assemble. (" + this.chargeurQueue.size() + " en stock)\n");
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				if (nouveauCable.getClass() == CableDefectueux.class) {
+					System.out.println("Le chargeur récupéré était deffectueux !\n");
+					this.stopProducing();
+				} else {
+					// Assemblage du chargeur
+					Chargeur nouveauChargeur = new Chargeur(nouveauTransformateur, nouveauCable);
+					try {
+						chargeurQueue.put(nouveauChargeur);
+						System.out.println("Un nouveau chargeur a ete assemble. (" + this.chargeurQueue.size() + " en stock)\n");
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			try {
@@ -38,12 +47,16 @@ public class ChargeurProducer implements Runnable {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("La chaîne de production s'arrête !");
 	}
 	
 	/**
 	 * Arrêt de la chaîne de production
 	 */
 	public void stopProducing() {
+		/*for (TransformateurProducer producteur : producteursDependants) {
+			producteur.stopProducing();
+		}*/
 		this.producing = false;
 	}
 }

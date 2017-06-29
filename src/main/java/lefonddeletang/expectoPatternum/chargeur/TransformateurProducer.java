@@ -1,4 +1,4 @@
-package lefonddeletang.expectoPatternum.telephone;
+package lefonddeletang.expectoPatternum.chargeur;
 
 import java.util.concurrent.BlockingQueue;
 
