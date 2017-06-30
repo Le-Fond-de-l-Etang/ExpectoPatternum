@@ -1,15 +1,20 @@
 package lefonddeletang.expectoPatternum.schtroumpf;
 
-import java.util.List;
+
 
 /**
- * Created by hugo on 29/06/2017.
+ * Etat du pont terminé
  */
 public class PontTermine implements PontState {
 
-    public void construire(Pont pont, Schtroumpf sch) {
-        sch.setObjectif(null);
+	/**
+	 * Fonction de construction, qui va ici désassigner l'objectif du schtroumpf puisque le pont est construit
+	 */
+    public void construire(Pont pont, Schtroumpf schtroumpf) {
+    	schtroumpf.setObjectif(null);
     }
 
-
+    public String toString(){
+        return "PontTermine";
+    }
 }

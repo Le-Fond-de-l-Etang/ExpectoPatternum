@@ -4,48 +4,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Hello world!
- *
+ * Programme d'entrée du monde des schtroumpfs
  */
 public class App 
 {
     public static void main( String[] args )
     {
+    	System.out.println("===   Les schtroumpfs vont vous construire un pont   ===\n");
+    	
+    	// Instanciation du marteau créateur de pont
+        Marteau marteau = Marteau.getInstance();
 
+        // Instanciation des schtroumpfs travailleurs
+        Schtroumpf bricoleur = new Schtroumpf("bricoleur");
+        Schtroumpf aLunnette = new Schtroumpf("à lunette");
+        Schtroumpf farceur = new Schtroumpf("farceur");
 
-
-        Marteau marteau         = Marteau.getInstance();
-
-
-
-
-        Schtroumpf bricoleur    = new Schtroumpf("bricoleur");
-        Schtroumpf aLunnette    = new Schtroumpf("à lunnette");
-        Schtroumpf farceur      = new Schtroumpf("farceur");
-
-        List<Schtroumpf> travailleurs = new ArrayList<Schtroumpf>();
-
+        // Assignation du marteau aux schtroumpfs travailleurs
         bricoleur.setOutil(marteau);
-        bricoleur.setOutil(marteau);
+        aLunnette.setOutil(marteau);
         farceur.setOutil(marteau);
-
+        
+        // Ségrégation des schtroumpfs travailleurs dans une liste
+        List<Schtroumpf> travailleurs = new ArrayList<Schtroumpf>();
         travailleurs.add(bricoleur);
         travailleurs.add(aLunnette);
         travailleurs.add(farceur);
 
+        // Création de l'instance du pont
+        Pont.createInstance(travailleurs);
 
-        Pont leBarrage = Pont.getInstance(travailleurs);
-
-
-
-
-
-        Thread t1 = new Thread(bricoleur);
-        Thread t3 = new Thread(aLunnette);
-        Thread t4 = new Thread(farceur);
-
-        t3.start();
-        t1.start();
-        t4.start();
+        // Démarrage de la vie des schtroumpfs travailleurs
+        (new Thread(bricoleur)).start();
+        (new Thread(aLunnette)).start();
+        (new Thread(farceur)).start();
     }
 }
