@@ -1,6 +1,6 @@
 package lefonddeletang.expectoPatternum.chargeur;
 
-import java.util.concurrent.BlockingQueue;
+import java.util.Optional;
 
 
 
@@ -13,13 +13,13 @@ public class ChargeurProducer implements Runnable {
 	/** Booléen attestant que le producteur est en cours de production */
 	boolean producing = true;
 	/** File d'attente partagée des transformateurs à utiliser */
-	private final BlockingQueue<Transformateur> transformateurQueue;
+	private final FileDAttente<Transformateur> transformateurQueue;
 	/** File d'attente partagée des chargeurs produits */
-	private final BlockingQueue<Chargeur> chargeurQueue;
+	private final FileDAttente<Chargeur> chargeurQueue;
 	/** Factory servant à créer des cables */
 	private final CableFactory cableFactory = new CableFactory();
-	/** Producteur de transformateur à notifier en cas d'arrêt **/
-	private final TransformateurProducer transformateurProducer;
+	/** Producteur de transformateur à notifier en cas d'arrêt (observateur) **/
+	private Optional<TransformateurProducer> transformateurProducer;
 	
 	/**
 	 * Constructeur récupérant les files d'attente de produits et le producteur de transformateur
@@ -28,10 +28,18 @@ public class ChargeurProducer implements Runnable {
 	 * @param chargeurQueue
 	 * @param transformateurProducer
 	 */
-	public ChargeurProducer(final BlockingQueue<Transformateur> transformateurQueue, final BlockingQueue<Chargeur> chargeurQueue, final TransformateurProducer transformateurProducer) {
+	public ChargeurProducer(final FileDAttente<Transformateur> transformateurQueue, final FileDAttente<Chargeur> chargeurQueue) {
 		this.transformateurQueue = transformateurQueue;
 		this.chargeurQueue = chargeurQueue;
-		this.transformateurProducer = transformateurProducer;
+	}
+	
+	/**
+	 * Lie un producteur de transformateur afin de pouvoir le notifier lors de l'arrêt de la chaîne
+	 * 
+	 * @param transformateurProducer Producteur à notifier
+	 */
+	public void linkTransformateurProducer(TransformateurProducer transformateurProducer) {
+		this.transformateurProducer = Optional.ofNullable(transformateurProducer);
 	}
 
 	/**
@@ -40,28 +48,26 @@ public class ChargeurProducer implements Runnable {
 	public void run() {
 		// Production des chargeurs
 		while (producing) {
-			if (transformateurQueue.size() > 0) {
+			if (transformateurQueue.getSize() > 0) {
 				// Récupération d'un chargeur
 				System.out.println("Transformateur recupere par le producteur de chargeur.");
-				Transformateur nouveauTransformateur = transformateurQueue.poll();
-				// Récupération d'un cable
-				Cable nouveauCable = cableFactory.creerCable();
-				if (nouveauCable.getClass() == CableDefectueux.class) {
-					System.out.println("Le chargeur récupéré était deffectueux !\n");
-					this.stopProducing();
-				} else {
-					// Assemblage du chargeur
-					Chargeur nouveauChargeur = new Chargeur(nouveauTransformateur, nouveauCable);
-					try {
-						if (chargeurQueue.remainingCapacity() == 0) {
+				Transformateur nouveauTransformateur = transformateurQueue.retrieveFromFile();
+				if (nouveauTransformateur != null) {
+					// Récupération d'un cable
+					Cable nouveauCable = cableFactory.creerCable();
+					if (nouveauCable.getClass() == CableDefectueux.class) {
+						System.out.println("Le chargeur récupéré était deffectueux !\n");
+						this.stopProducing();
+					} else {
+						// Assemblage du chargeur
+						Chargeur nouveauChargeur = new Chargeur(nouveauTransformateur, nouveauCable);
+						if (chargeurQueue.getRemainingSize() == 0) {
 							this.stopProducing();
-							System.out.println("Tous les chargeurs ("+chargeurQueue.size()+") ont été produits !\n");
+							System.out.println("Tous les chargeurs ("+chargeurQueue.getSize()+") ont été produits !\n");
 						} else {
-							chargeurQueue.put(nouveauChargeur);
-							System.out.println("Un nouveau chargeur a ete assemble. (" + this.chargeurQueue.size() + " en stock)\n");
+							chargeurQueue.addToFile(nouveauChargeur);
+							System.out.println("Un nouveau chargeur a ete assemble. (" + this.chargeurQueue.getSize() + " en stock)\n");
 						}
-					} catch (InterruptedException e) {
-						e.printStackTrace();
 					}
 				}
 			}
@@ -71,7 +77,7 @@ public class ChargeurProducer implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("La chaîne de production s'arrête !");
+		System.out.println("La chaîne de production s'arrête après avoir créé " + this.chargeurQueue.getSize() + " chargeurs.");
 	}
 	
 	/**
@@ -79,6 +85,8 @@ public class ChargeurProducer implements Runnable {
 	 */
 	public void stopProducing() {
 		this.producing = false;
-		this.transformateurProducer.stopProducing();
+		if (this.transformateurProducer.isPresent()) {
+			this.transformateurProducer.get().stopProducing();
+		}
 	}
 }
