@@ -35,8 +35,19 @@ public class App
         Pont.createInstance(travailleurs);
 
         // Démarrage de la vie des schtroumpfs travailleurs
-        (new Thread(bricoleur)).start();
-        (new Thread(aLunnette)).start();
-        (new Thread(farceur)).start();
+        Thread bricoleurThread = new Thread(bricoleur);
+        Thread lunetteThread = new Thread(aLunnette);
+        Thread farceurThread = new Thread(farceur);
+        bricoleurThread.start();
+        lunetteThread.start();
+        farceurThread.start();
+        while (bricoleurThread.isAlive() && lunetteThread.isAlive() && farceurThread.isAlive()) {
+        	try {
+        		Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				break;
+			}
+        }
     }
 }
