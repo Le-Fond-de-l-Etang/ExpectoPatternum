@@ -1,7 +1,9 @@
 package lefonddeletang.expectoPatternum.pizzaYolo;
 
+
+
 /**
- * Created by hugo on 29/06/2017.
+ * Interface comportant les méthodes requises par une classe pour être considérée comme une Pizza
  */
 public interface PizzaInterface  {
      public int getPrix();
