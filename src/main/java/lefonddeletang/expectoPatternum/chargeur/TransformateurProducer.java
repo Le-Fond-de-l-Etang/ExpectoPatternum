@@ -25,22 +25,19 @@ public class TransformateurProducer implements Runnable {
 	public void run() {
 		// Production des transformateurs
 		while (producing) {
-			try {
-				Transformateur t = new Transformateur();
-				this.transformateurQueue.put(t);
+			Transformateur t = new Transformateur();
+			if (this.transformateurQueue.offer(t)) {
 				System.out.println("Création d'un transformateur par le producteur de transformateur.");
-			} catch (final InterruptedException e) {
-				e.printStackTrace();
 			}
 		}
 		
-		// En attente que la file d'attente soit épuisée
+		// Epuisement du stock de transformateur
 		while (transformateurQueue.size() > 0) {
+			System.out.println(transformateurQueue.size() + " transformateur(s) non utilisé(s) stocké(s).");
 			try {
-				Thread.sleep(200);
-				System.out.println("Producteur de transformateur en attente d'épuisement.");
-			} catch (final InterruptedException e) {
-				break;
+				transformateurQueue.clear();
+			} catch (UnsupportedOperationException e) {
+				e.printStackTrace();
 			}
 		}
 	}
