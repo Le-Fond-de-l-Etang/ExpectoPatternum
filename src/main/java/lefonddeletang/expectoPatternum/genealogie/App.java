@@ -3,11 +3,14 @@ package lefonddeletang.expectoPatternum.genealogie;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Programme traçant la généalogie de la famille Barbapapa
+ */
 public class App 
 {
     public static void main( String[] args )
     {
-        System.out.println( "===   Genealogie de la famille Barbapapa   ===" );
+        System.out.println("===   Genealogie de la famille Barbapapa   ===\n");
         
         /// Instanciation des membres de la famille Barbapapa
         

@@ -2,6 +2,11 @@ package lefonddeletang.expectoPatternum.chargeur;
 
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * Producteur de chargeur
+ * 
+ * Dépend de la production de transformateur associée
+ */
 public class ChargeurProducer implements Runnable {
 	/** Booléen attestant que le producteur est en cours de production */
 	boolean producing = true;
@@ -15,9 +20,11 @@ public class ChargeurProducer implements Runnable {
 	public ChargeurProducer(final BlockingQueue<Transformateur> transformateurQueue, final BlockingQueue<Chargeur> chargeurQueue) {
 		this.transformateurQueue = transformateurQueue;
 		this.chargeurQueue = chargeurQueue;
-		//this.producteursDependants = producteursDependants;
 	}
 
+	/**
+	 * Boucle runnable de la chaîne de production
+	 */
 	public void run() {
 		// Production des chargeurs
 		while (producing) {

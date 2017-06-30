@@ -2,6 +2,11 @@ package lefonddeletang.expectoPatternum.chargeur;
 
 import java.util.concurrent.BlockingQueue;
 
+
+
+/**
+ * Producteur de transformateur à la chaîne
+ */
 public class TransformateurProducer implements Runnable {
 	/** Booléen attestant que le producteur est en cours de production */
 	boolean producing = true;

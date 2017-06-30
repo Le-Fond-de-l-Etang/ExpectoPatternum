@@ -3,6 +3,9 @@ package lefonddeletang.expectoPatternum.chargeur;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Programme d'assemblage de chargeurs de téléphone
+ */
 public class App 
 {
     public static void main( String[] args )
