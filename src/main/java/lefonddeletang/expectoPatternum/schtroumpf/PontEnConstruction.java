@@ -1,15 +1,19 @@
 package lefonddeletang.expectoPatternum.schtroumpf;
 
-import java.util.List;
+
 
 /**
- * Created by hugo on 29/06/2017.
+ * Etat du pont en cours de construction
  */
 public class PontEnConstruction implements PontState {
 
-    public void construire(Pont pont, Schtroumpf sch) {
-        pont.schtroumpfer(sch.force);
+	/**
+	 * Fonction de construction, qui va ici schtroumpfer le pont objectif avec la force du schtroumpf fourni en paramètre
+	 */
+    public void construire(Pont pont, Schtroumpf schtroumpf) {
+        pont.schtroumpfer(schtroumpf.force);
     }
+    
     public String toString(){
         return "PontEnConstruction";
     }

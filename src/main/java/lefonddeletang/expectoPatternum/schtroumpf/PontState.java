@@ -1,10 +1,9 @@
 package lefonddeletang.expectoPatternum.schtroumpf;
 
-import java.util.List;
-
 /**
- * Created by hugo on 29/06/2017.
+ * Interface d'état du pont
  */
 public interface PontState {
+	/** Méthode de construction agissant différemment selon l'état du pont **/
     void construire(Pont pont,Schtroumpf sch);
 }
