@@ -63,10 +63,12 @@ public class App
      */
     public static void afficherPersonneEtEnfants(Personne personne, String prefixe) {
     	System.out.println(prefixe + personne.getNom());
-    	prefixe += "\t";
     	List<Personne> enfants = personne.getEnfants();
     	for (Personne enfant : enfants) {
-    		afficherPersonneEtEnfants(enfant, prefixe);
+    		afficherPersonneEtEnfants(enfant, prefixe + "|\t");
+    	}
+    	if (enfants.size() > 0) {
+    		System.out.println(prefixe);
     	}
     }
 }

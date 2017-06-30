@@ -17,7 +17,8 @@ public class App
         final BlockingQueue<Chargeur> chargeurQueue = new LinkedBlockingQueue<Chargeur>(75);
         
         // Initialisation des thread producteurs
-        new Thread(new TransformateurProducer(transformateurQueue)).start();
-        new Thread(new ChargeurProducer(transformateurQueue, chargeurQueue)).start();
+        TransformateurProducer transformateurProducer = new TransformateurProducer(transformateurQueue);
+        new Thread(new ChargeurProducer(transformateurQueue, chargeurQueue, transformateurProducer)).start();
+        new Thread(transformateurProducer).start();
     }
 }

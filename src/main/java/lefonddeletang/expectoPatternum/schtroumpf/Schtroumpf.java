@@ -18,6 +18,8 @@ public class Schtroumpf implements java.lang.Runnable {
     protected int force;
     /** Cooldown du schtroumpf = temps d'attente entre les actions du schtroumpf **/
     protected int coeficiantDeRefroidissement;
+    /** Boolean indiquant si le schtroumpf a un but dans la vie ou non **/
+    private boolean estUtile;
 
     
     
@@ -30,6 +32,7 @@ public class Schtroumpf implements java.lang.Runnable {
         this.nom = nom;
         this.force = 1;
         this.coeficiantDeRefroidissement = 2;
+        this.estUtile = true;
     }
 
     /** Setter de l'outil marteau du schtroumpf **/
@@ -67,12 +70,19 @@ public class Schtroumpf implements java.lang.Runnable {
             TimeUnit.SECONDS.sleep(1);
         }
     }
+    
+    /**
+     * Envoyer le schtroumpf à la retraite
+     */
+    public void retraiterSchtroumpf() {
+    	this.estUtile = false;
+    }
 
     /**
      * Boucle de conscience du schtroumpf, s'arrête à sa mort (qui peut être considérée comme une exception)
      */
     public void run() {
-        while (true) {
+        while (estUtile) {
             if (this.objectif != null) {
                 try {
                     prendMarteau();

@@ -12,6 +12,7 @@ public class PontTermine implements PontState {
 	 */
     public void construire(Pont pont, Schtroumpf schtroumpf) {
     	schtroumpf.setObjectif(null);
+    	schtroumpf.retraiterSchtroumpf();
     }
 
     public String toString(){

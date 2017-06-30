@@ -13,6 +13,11 @@ public class TransformateurProducer implements Runnable {
 	/** File d'attente partagée des transformateurs produits */
 	private final BlockingQueue<Transformateur> transformateurQueue;
 	
+	/**
+	 * Constructeur de producteur de transformateur, initialisant la file d'attente à remplir
+	 * 
+	 * @param transformateurQueue
+	 */
 	public TransformateurProducer(final BlockingQueue<Transformateur> transformateurQueue) {
 		this.transformateurQueue = transformateurQueue;
 	}

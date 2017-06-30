@@ -2,6 +2,8 @@ package lefonddeletang.expectoPatternum.chargeur;
 
 import java.util.concurrent.BlockingQueue;
 
+
+
 /**
  * Producteur de chargeur
  * 
@@ -16,10 +18,20 @@ public class ChargeurProducer implements Runnable {
 	private final BlockingQueue<Chargeur> chargeurQueue;
 	/** Factory servant à créer des cables */
 	private final CableFactory cableFactory = new CableFactory();
+	/** Producteur de transformateur à notifier en cas d'arrêt **/
+	private final TransformateurProducer transformateurProducer;
 	
-	public ChargeurProducer(final BlockingQueue<Transformateur> transformateurQueue, final BlockingQueue<Chargeur> chargeurQueue) {
+	/**
+	 * Constructeur récupérant les files d'attente de produits et le producteur de transformateur
+	 * 
+	 * @param transformateurQueue
+	 * @param chargeurQueue
+	 * @param transformateurProducer
+	 */
+	public ChargeurProducer(final BlockingQueue<Transformateur> transformateurQueue, final BlockingQueue<Chargeur> chargeurQueue, final TransformateurProducer transformateurProducer) {
 		this.transformateurQueue = transformateurQueue;
 		this.chargeurQueue = chargeurQueue;
+		this.transformateurProducer = transformateurProducer;
 	}
 
 	/**
@@ -41,8 +53,13 @@ public class ChargeurProducer implements Runnable {
 					// Assemblage du chargeur
 					Chargeur nouveauChargeur = new Chargeur(nouveauTransformateur, nouveauCable);
 					try {
-						chargeurQueue.put(nouveauChargeur);
-						System.out.println("Un nouveau chargeur a ete assemble. (" + this.chargeurQueue.size() + " en stock)\n");
+						if (chargeurQueue.remainingCapacity() == 0) {
+							this.stopProducing();
+							System.out.println("Tous les chargeurs ("+chargeurQueue.size()+") ont été produits !\n");
+						} else {
+							chargeurQueue.put(nouveauChargeur);
+							System.out.println("Un nouveau chargeur a ete assemble. (" + this.chargeurQueue.size() + " en stock)\n");
+						}
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -61,9 +78,7 @@ public class ChargeurProducer implements Runnable {
 	 * Arrêt de la chaîne de production
 	 */
 	public void stopProducing() {
-		/*for (TransformateurProducer producteur : producteursDependants) {
-			producteur.stopProducing();
-		}*/
 		this.producing = false;
+		this.transformateurProducer.stopProducing();
 	}
 }
